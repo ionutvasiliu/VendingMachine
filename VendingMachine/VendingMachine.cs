@@ -23,15 +23,20 @@ namespace VendingMachine
         public Can Deliver(int productKey)
         {
             var price = _prices.ContainsKey(productKey) ? _prices[productKey] : 0;
-            var productIndex = Array.IndexOf(_quantityKeys, productKey);
-            if (!_availableProducts.Contains(productKey) || _quantityValues[productIndex] < 1 || AvailableAmount < price)
+            var productIndex = GetIndex(_quantityKeys, productKey);
+            if (!_availableProducts.Contains(productKey) || GetValue(_quantityValues, productIndex) < 1 || AvailableAmount < price)
             {
                 return null;
             }
 
-            _quantityValues[productIndex] = _quantityValues[productIndex] - 1;
+            _quantityValues[productIndex] = GetValue(_quantityValues, productIndex) - 1;
             AvailableAmount -= price;
             return new Can { Type = productKey };
+        }
+
+        private int GetIndex(int[] array, int productKey)
+        {
+            return Array.IndexOf(array, productKey);
         }
 
         public void AddChoice(int product, int amount = int.MaxValue)
@@ -98,15 +103,18 @@ namespace VendingMachine
 
         public Can DeliverChoiceForCard()
         {
-            if (_valid && _availableProducts.IndexOf(_selectedProduct) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, _selectedProduct)] > 0)
+            if (_valid && _availableProducts.IndexOf(_selectedProduct) > -1 && GetValue(_quantityValues, GetIndex(_quantityKeys, _selectedProduct)) > 0)
             {
-                _quantityValues[Array.IndexOf(_quantityKeys, _selectedProduct)] = _quantityValues[Array.IndexOf(_quantityKeys, _selectedProduct)] - 1;
+                _quantityValues[GetIndex(_quantityKeys, _selectedProduct)] = GetValue(_quantityValues, GetIndex(_quantityKeys, _selectedProduct)) - 1;
                 return new Can { Type = _selectedProduct };
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
+        }
+
+        private int GetValue(int[] array, int index)
+        {
+            return array[index];
         }
     }
 
