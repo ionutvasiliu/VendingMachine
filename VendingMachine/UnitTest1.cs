@@ -50,7 +50,7 @@ namespace VendingMachine
         public void ShouldHaveTotalZeroInitialy()
         {
             var vendingMachine = new VendingMachine();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.AvailableAmount);
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
-            Assert.AreEqual(5, vendingMachine.T);
+            Assert.AreEqual(5, vendingMachine.AvailableAmount);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.AddCoin(1);
-            Assert.AreEqual(6, vendingMachine.T);
+            Assert.AreEqual(6, vendingMachine.AvailableAmount);
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace VendingMachine
             var vendingMachine = new VendingMachine();
             vendingMachine.AddCoin(5);
             vendingMachine.Change();
-            Assert.AreEqual(0, vendingMachine.T);
+            Assert.AreEqual(0, vendingMachine.AvailableAmount);
         }
 
         [TestMethod]
@@ -127,7 +127,7 @@ namespace VendingMachine
             vendingMachine.Stock(_colaChoice,5,3);
             vendingMachine.AddCoin(5);
             vendingMachine.Deliver(_colaChoice);
-            Assert.AreEqual(2, vendingMachine.T);
+            Assert.AreEqual(2, vendingMachine.AvailableAmount);
         }
 
         [TestMethod]
