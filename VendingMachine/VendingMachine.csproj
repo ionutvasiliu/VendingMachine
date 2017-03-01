@@ -54,6 +54,7 @@
     <Compile Include="MyDictionary.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VendingDictionary.cs" />
     <Compile Include="VendingMachine.cs" />
   </ItemGroup>
   <ItemGroup>

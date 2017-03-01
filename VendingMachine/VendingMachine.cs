@@ -13,38 +13,31 @@ namespace VendingMachine
         private CreditCard _creditCard;
         private bool _valid;
         private int _selectedProduct;
+        private readonly VendingDictionary _vendingDictionary;
 
         public double AvailableAmount { get; private set; }
 
         public VendingMachine()
         {
+            _vendingDictionary = new VendingDictionary();
         }
 
         public Can Deliver(int productKey)
         {
             var price = _prices.ContainsKey(productKey) ? _prices[productKey] : 0;
-            var productIndex = GetIndex(_quantityKeys, productKey);
-            if (!_availableProducts.Contains(productKey) || GetValue(_quantityValues, productIndex) < 1 || AvailableAmount < price)
+            if (!_availableProducts.Contains(productKey) || _vendingDictionary.GetValue(productKey) < 1 || AvailableAmount < price)
             {
                 return null;
             }
 
-            _quantityValues[productIndex] = GetValue(_quantityValues, productIndex) - 1;
+            _vendingDictionary.SetValue(productKey, _vendingDictionary.GetValue(productKey) - 1);
             AvailableAmount -= price;
             return new Can { Type = productKey };
         }
 
-        private int GetIndex(int[] array, int productKey)
-        {
-            return Array.IndexOf(array, productKey);
-        }
-
         public void AddChoice(int product, int amount = int.MaxValue)
         {
-            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-            _quantityKeys[_quantityKeys.Length - 1] = product;
-            _quantityValues[_quantityValues.Length - 1] = amount;
+            _vendingDictionary.Add(product, amount);
             _availableProducts.Add(product);
         }
 
@@ -103,18 +96,13 @@ namespace VendingMachine
 
         public Can DeliverChoiceForCard()
         {
-            if (_valid && _availableProducts.IndexOf(_selectedProduct) > -1 && GetValue(_quantityValues, GetIndex(_quantityKeys, _selectedProduct)) > 0)
+            if (_valid && _availableProducts.IndexOf(_selectedProduct) > -1 && _vendingDictionary.GetValue(_selectedProduct) > 0)
             {
-                _quantityValues[GetIndex(_quantityKeys, _selectedProduct)] = GetValue(_quantityValues, GetIndex(_quantityKeys, _selectedProduct)) - 1;
+                _vendingDictionary.SetValue(_selectedProduct, _vendingDictionary.GetValue(_selectedProduct) - 1);
                 return new Can { Type = _selectedProduct };
             }
 
             return null;
-        }
-
-        private int GetValue(int[] array, int index)
-        {
-            return array[index];
         }
     }
 
